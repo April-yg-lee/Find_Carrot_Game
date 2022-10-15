@@ -33,7 +33,7 @@ body {
   padding: 1%;
 }
 
-.playBtn {
+.playBtn, .pauseBtn {
   font-size: 40px;
   text-align: center;
   width: 40px;
@@ -43,6 +43,13 @@ body {
   border-radius: 10px;
   cursor: pointer;
   z-index: 2;
+}
+
+.pauseBtn {
+  width: 0;
+  height: 0;
+  padding: 0;
+  font-size: 0;
 }
 
 .timer {
@@ -100,6 +107,7 @@ body {
 }
 
 .bugImg, .carrImg {
+  position: absolute;
   cursor: pointer;
   z-index: 2;
 }
