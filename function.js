@@ -37,6 +37,7 @@ let wonReplay = document.querySelector(".wonReplay");
 let timeLeft = 5;
 
 playBtn.addEventListener("click", () => {
+
   playBtn.style.display = "none";
   pauseBtn.style.width = 40 + "px";
   pauseBtn.style.height = 40 + "px";
@@ -75,6 +76,7 @@ let carrot = [];
 
 let bugs = document.createElement("img");
 let bugs1 = document.createElement("img");
+
 function createBug() {
   console.log('Im in createBug');
   bugs.setAttribute("class", "bugImg");
@@ -88,9 +90,12 @@ function createBug() {
   console.log('bugsection' + bugSection);
 }
 
-let carrots = document.createElement("img");
-let carrots1 = document.createElement("img");
+let carrots;
+let carrots1;
+
 function createCarrot() {
+  carrots = document.createElement("img");
+  carrots1 = document.createElement("img");
   console.log('Carrots:' + carrots);
   console.log('Im in createCarrot');
   carrots.setAttribute("class", "carrImg");
@@ -105,11 +110,13 @@ function createCarrot() {
 }
 
 function removeCarrot() {
+  carrot = [];
   bugSection.removeChild(carrots);
   bugSection.removeChild(carrots1);
 }
 
 function removeBug() {
+  bug = [];
   bugSection.removeChild(bugs);
   bugSection.removeChild(bugs1);
 }
@@ -181,7 +188,6 @@ function updateTimer() {
 }
 
 function showLostBox() {
-  console.log(timeLeft);
   lostBox.style.display = "block";
   deactivateBugsCarrots();
 }
@@ -204,12 +210,13 @@ function carrotCounter() {
 }
 
 function checker(counter) {
-  console.log(carrot.length);
-  console.log(counter);
   if (carrot.length == counter) {
     wonBox.style.display = "block";
     timeLeft = 0;
     deactivateBugsCarrots();
+    let audio = new Audio();
+    audio.src = './sound/game_win.mp3';
+    audio.play();
   }
 }
 
@@ -217,49 +224,41 @@ function carrotFind() {
   carrot.forEach((array) => {
     array.addEventListener("click", (event) => {
       event.target.style.display = "none";
+      let audio = new Audio();
+      audio.src = './sound/carrot_pull.mp3';
+      audio.play();
     });
   });
 }
 
-lostReplay.addEventListener("click", () => {
-  lostBox.style.display = "none";
+function gameRestart() {
   counterBtn.innerHTML = 0;
-  carrotCounter();
-  carrotFind();
   timeLeft = 5;
   clearInterval(timer);
   timerStart();
   removeCarrot();
   removeBug();
-  console.log('removeBug 다음줄');
   randomPosition();
+  carrotCounter();
+  carrotFind();
   activateBugsCarrots();
+}
+
+lostReplay.addEventListener("click", () => {
+  lostBox.style.display = "none";
+  gameRestart();
 });
 
 wonReplay.addEventListener("click", () => {
+
+
   wonBox.style.display = "none";
-  counterBtn.innerHTML = 0;
-  carrotCounter();
-  carrotFind();
-  timeLeft = 5;
-  clearInterval(timer);
-  timerStart();
-  removeCarrot();
-  removeBug();
-  randomPosition();
-  activateBugsCarrots();
+  gameRestart();
 });
 
 originReplay.addEventListener("click", () => {
   replayBox.style.display = "none";
-  counterBtn.innerHTML = 0;
-  carrotCounter();
-  carrotFind();
-  timeLeft = 5;
-  clearInterval(timer);
-  timerStart();
-  removeCarrot();
-  removeBug();
-  randomPosition();
-  activateBugsCarrots();
+  gameRestart();
 });
+
+
