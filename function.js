@@ -12,17 +12,15 @@ let originReplay = document.querySelector(".originReplay");
 let lostReplay = document.querySelector(".lostReplay");
 let wonReplay = document.querySelector(".wonReplay");
 
-
-const carrotSound = new Audio('./sound/carrot_pull.mp3');
-const alertSound = new Audio('./sound/alert.wav');
-const bgSound = new Audio('./sound/bg.mp3');
-const bugSound = new Audio('./sound/bug_pull.mp3');
-const winSound = new Audio('./sound/game_win.mp3');
+const carrotSound = new Audio("./sound/carrot_pull.mp3");
+const alertSound = new Audio("./sound/alert.wav");
+const bgSound = new Audio("./sound/bg.mp3");
+const bugSound = new Audio("./sound/bug_pull.mp3");
+const winSound = new Audio("./sound/game_win.mp3");
 
 let timeLeft = 5;
 
 playBtn.addEventListener("click", () => {
-
   playBtn.style.display = "none";
   pauseBtn.style.width = 40 + "px";
   pauseBtn.style.height = 40 + "px";
@@ -31,6 +29,7 @@ playBtn.addEventListener("click", () => {
 
   bugSection.style.display = "block";
 
+  refreshCarrotCount();
   timerStart();
   playSound(bgSound);
 
@@ -42,7 +41,6 @@ playBtn.addEventListener("click", () => {
     deactivateBugsCarrots();
     stopSound(bgSound);
     playSound(alertSound);
-
   });
 
   randomPosition();
@@ -50,7 +48,14 @@ playBtn.addEventListener("click", () => {
   carrotFind();
 
   // carrotFindAll();
+  whenBugClicked();
 
+});
+
+let bug = [];
+let item;
+
+function whenBugClicked() {
   bug.forEach((array) => {
     array.addEventListener("click", (event) => {
       lostBox.style.display = "block";
@@ -60,25 +65,21 @@ playBtn.addEventListener("click", () => {
       stopSound(bgSound);
     });
   });
-});
-
-let bug = [];
-let carrot = [];
-
-let bugs = document.createElement("img");
-let bugs1 = document.createElement("img");
-
-function createBug() {
-  bugs.setAttribute("class", "bugImg");
-  bugs.setAttribute("src", "./img/bug.png");
-  bug.push(bugs);
-  bugs1.setAttribute("class", "bugImg");
-  bugs1.setAttribute("src", "./img/bug.png");
-  bug.push(bugs1);
-  bugSection.appendChild(bugs);
-  bugSection.appendChild(bugs1);
 }
 
+function createBug(className, count, imgPath) {
+  for (let i = 0; i < count; i++) {
+    item = document.createElement("img");
+    item.setAttribute("class", className);
+    item.setAttribute("src", imgPath);
+    bug.push(item);
+    bugSection.appendChild(item);
+  }
+
+  whenBugClicked();
+}
+
+let carrot = [];
 let carrots;
 let carrots1;
 
@@ -103,27 +104,25 @@ function removeCarrot() {
 
 function removeBug() {
   bug = [];
-  bugSection.removeChild(bugs);
-  bugSection.removeChild(bugs1);
+  bugSection.innerHTML = "";
 }
 
 function deactivateBugsCarrots() {
-  bugs.style.pointerEvents = "none";
-  bugs1.style.pointerEvents = "none";
+  item.style.pointerEvents = 'none';
   carrots.style.pointerEvents = "none";
   carrots1.style.pointerEvents = "none";
 }
 
 function activateBugsCarrots() {
-  bugs.style.pointerEvents = "auto";
-  bugs1.style.pointerEvents = "auto";
+  // let bugImg = document.querySelector('.bugImg');
+  // console.log(bugImg);
+  item.style.pointerEvents = 'auto';
   carrots.style.pointerEvents = "auto";
   carrots1.style.pointerEvents = "auto";
 }
 
 function randomPosition() {
-
-  createBug();
+  createBug("bugImg", 5, "./img/bug.png");
   createCarrot();
 
   let winWidth = 700;
@@ -171,7 +170,6 @@ function updateTimer() {
     showLostBox();
     playSound(bugSound);
     stopSound(bgSound);
-
   }
 }
 
@@ -249,7 +247,6 @@ function stopSound(sound) {
 lostReplay.addEventListener("click", () => {
   lostBox.style.display = "none";
   gameRestart();
-
 });
 
 wonReplay.addEventListener("click", () => {
@@ -260,7 +257,4 @@ wonReplay.addEventListener("click", () => {
 originReplay.addEventListener("click", () => {
   replayBox.style.display = "none";
   gameRestart();
-
 });
-
-
