@@ -17,7 +17,8 @@ const alertSound = new Audio("./sound/alert.wav");
 const bgSound = new Audio("./sound/bg.mp3");
 const bugSound = new Audio("./sound/bug_pull.mp3");
 const winSound = new Audio("./sound/game_win.mp3");
-
+const numberOfBugs = 5;
+const numberOfCarrots = 5;
 let timeLeft = 5;
 
 playBtn.addEventListener("click", () => {
@@ -49,7 +50,6 @@ playBtn.addEventListener("click", () => {
 
   // carrotFindAll();
   whenBugClicked();
-
 });
 
 let bug = [];
@@ -80,26 +80,20 @@ function createBug(className, count, imgPath) {
 }
 
 let carrot = [];
-let carrots;
-let carrots1;
 
-function createCarrot() {
-  carrots = document.createElement("img");
-  carrots1 = document.createElement("img");
-  carrots.setAttribute("class", "carrImg");
-  carrots.setAttribute("src", "./img/carrot.png");
-  carrot.push(carrots);
-  carrots1.setAttribute("class", "carrImg");
-  carrots1.setAttribute("src", "./img/carrot.png");
-  carrot.push(carrots1);
-  bugSection.appendChild(carrots);
-  bugSection.appendChild(carrots1);
+function createCarrot(className, count, imgPath) {
+  for (let i = 0; i < count; i++) {
+    item = document.createElement("img");
+    item.setAttribute("class", className);
+    item.setAttribute("src", imgPath);
+    carrot.push(item);
+    bugSection.appendChild(item);
+  }
 }
 
 function removeCarrot() {
   carrot = [];
-  bugSection.removeChild(carrots);
-  bugSection.removeChild(carrots1);
+  bugSection.innerHTML = "";
 }
 
 function removeBug() {
@@ -108,22 +102,18 @@ function removeBug() {
 }
 
 function deactivateBugsCarrots() {
-  item.style.pointerEvents = 'none';
-  carrots.style.pointerEvents = "none";
-  carrots1.style.pointerEvents = "none";
+  item.style.pointerEvents = "none";
 }
 
 function activateBugsCarrots() {
   // let bugImg = document.querySelector('.bugImg');
   // console.log(bugImg);
-  item.style.pointerEvents = 'auto';
-  carrots.style.pointerEvents = "auto";
-  carrots1.style.pointerEvents = "auto";
+  item.style.pointerEvents = "auto";
 }
 
 function randomPosition() {
-  createBug("bugImg", 5, "./img/bug.png");
-  createCarrot();
+  createBug("bugImg", numberOfBugs, "./img/bug.png");
+  createCarrot("carrImg", numberOfCarrots, "./img/carrot.png");
 
   let winWidth = 700;
   let winHeight = 150;
@@ -184,10 +174,10 @@ function timerStart() {
   lostBox.style.display = "none";
 }
 
-let CARROT_COUNT = 2;
+let CARROT_COUNT = 5;
 
 function refreshCarrotCount() {
-  CARROT_COUNT = 2;
+  CARROT_COUNT = 5;
   counterBtn.innerHTML = CARROT_COUNT;
 }
 
