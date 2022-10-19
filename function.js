@@ -1,25 +1,5 @@
 "use strict";
 
-/**
- * 1. When user click play btn,
- *  1) bugs and carrots appear randomly. //
- *    a) appear first //
- *    b) positions Randomly //
- *  2) Timer start from 10 to 0. //
- *    a) when it's 0, show 'you lost' box. //
- *  3) When I click bug, counter will be increased. //
- *    a) when I click every bugs in 10 secs, show 'you won' box
- *
- * 2. When I click 'stop' btn,
- *  1) show 'replay' btn
- *  2) Stop the timer
- *
- * 3. When I click 'replay' btn,
- *  1) Game starts like #1
- *
- * 4. Sound!
- */
-
 let counterBtn = document.querySelector(".counter");
 const playBtn = document.querySelector(".playBtn");
 const pauseBtn = document.querySelector(".pauseBtn");
@@ -31,8 +11,13 @@ let timer = document.querySelector(".timer");
 let originReplay = document.querySelector(".originReplay");
 let lostReplay = document.querySelector(".lostReplay");
 let wonReplay = document.querySelector(".wonReplay");
-// let bug = document.querySelectorAll(".bugImg");
-// let carrot = document.querySelectorAll(".carrImg");
+
+
+const carrotSound = new Audio('./sound/carrot_pull.mp3');
+const alertSound = new Audio('./sound/alert.wav');
+const bgSound = new Audio('./sound/bg.mp3');
+const bugSound = new Audio('./sound/bug_pull.mp3');
+const winSound = new Audio('./sound/game_win.mp3');
 
 let timeLeft = 5;
 
@@ -47,6 +32,7 @@ playBtn.addEventListener("click", () => {
   bugSection.style.display = "block";
 
   timerStart();
+  playSound(bgSound);
 
   pauseBtn.addEventListener("click", () => {
     replayBox.style.display = "block";
@@ -54,6 +40,9 @@ playBtn.addEventListener("click", () => {
     clearInterval();
     timeLeft = 0;
     deactivateBugsCarrots();
+    stopSound(bgSound);
+    playSound(alertSound);
+
   });
 
   randomPosition();
@@ -67,6 +56,8 @@ playBtn.addEventListener("click", () => {
       lostBox.style.display = "block";
       timeLeft = 0;
       deactivateBugsCarrots();
+      playSound(bugSound);
+      stopSound(bgSound);
     });
   });
 });
@@ -78,7 +69,6 @@ let bugs = document.createElement("img");
 let bugs1 = document.createElement("img");
 
 function createBug() {
-  console.log('Im in createBug');
   bugs.setAttribute("class", "bugImg");
   bugs.setAttribute("src", "./img/bug.png");
   bug.push(bugs);
@@ -87,7 +77,6 @@ function createBug() {
   bug.push(bugs1);
   bugSection.appendChild(bugs);
   bugSection.appendChild(bugs1);
-  console.log('bugsection' + bugSection);
 }
 
 let carrots;
@@ -96,8 +85,6 @@ let carrots1;
 function createCarrot() {
   carrots = document.createElement("img");
   carrots1 = document.createElement("img");
-  console.log('Carrots:' + carrots);
-  console.log('Im in createCarrot');
   carrots.setAttribute("class", "carrImg");
   carrots.setAttribute("src", "./img/carrot.png");
   carrot.push(carrots);
@@ -106,7 +93,6 @@ function createCarrot() {
   carrot.push(carrots1);
   bugSection.appendChild(carrots);
   bugSection.appendChild(carrots1);
-  console.log('Carrotsection' + bugSection);
 }
 
 function removeCarrot() {
@@ -136,7 +122,6 @@ function activateBugsCarrots() {
 }
 
 function randomPosition() {
-  console.log('removeBug 다음줄 in randomPosition');
 
   createBug();
   createCarrot();
@@ -184,6 +169,9 @@ function updateTimer() {
   } else if (timeLeft == 0) {
     document.querySelector(".timer").innerHTML = `0:${timeLeft}`;
     showLostBox();
+    playSound(bugSound);
+    stopSound(bgSound);
+
   }
 }
 
@@ -198,25 +186,30 @@ function timerStart() {
   lostBox.style.display = "none";
 }
 
+let CARROT_COUNT = 2;
+
+function refreshCarrotCount() {
+  CARROT_COUNT = 2;
+  counterBtn.innerHTML = CARROT_COUNT;
+}
+
 function carrotCounter() {
-  let i = 0;
   carrot.forEach((array) => {
     array.addEventListener("click", () => {
-      counterBtn.innerHTML = 1 + i;
-      i++;
-      checker(i);
+      counterBtn.innerHTML = CARROT_COUNT - 1;
+      CARROT_COUNT--;
+      checker();
     });
   });
 }
 
-function checker(counter) {
-  if (carrot.length == counter) {
+function checker() {
+  if (CARROT_COUNT == 0) {
     wonBox.style.display = "block";
     timeLeft = 0;
     deactivateBugsCarrots();
-    let audio = new Audio();
-    audio.src = './sound/game_win.mp3';
-    audio.play();
+    playSound(winSound);
+    stopSound(bgSound);
   }
 }
 
@@ -224,9 +217,7 @@ function carrotFind() {
   carrot.forEach((array) => {
     array.addEventListener("click", (event) => {
       event.target.style.display = "none";
-      let audio = new Audio();
-      audio.src = './sound/carrot_pull.mp3';
-      audio.play();
+      playSound(carrotSound);
     });
   });
 }
@@ -242,16 +233,26 @@ function gameRestart() {
   carrotCounter();
   carrotFind();
   activateBugsCarrots();
+  playSound(bgSound);
+  refreshCarrotCount();
+}
+
+function playSound(sound) {
+  sound.currentTime = 0;
+  sound.play();
+}
+
+function stopSound(sound) {
+  sound.pause();
 }
 
 lostReplay.addEventListener("click", () => {
   lostBox.style.display = "none";
   gameRestart();
+
 });
 
 wonReplay.addEventListener("click", () => {
-
-
   wonBox.style.display = "none";
   gameRestart();
 });
@@ -259,6 +260,7 @@ wonReplay.addEventListener("click", () => {
 originReplay.addEventListener("click", () => {
   replayBox.style.display = "none";
   gameRestart();
+
 });
 
 
