@@ -17,6 +17,7 @@ const alertSound = new Audio("./sound/alert.wav");
 const bgSound = new Audio("./sound/bg.mp3");
 const bugSound = new Audio("./sound/bug_pull.mp3");
 const winSound = new Audio("./sound/game_win.mp3");
+
 const numberOfBugs = 5;
 const numberOfCarrots = 5;
 let timeLeft = 5;
@@ -63,6 +64,7 @@ function whenBugClicked() {
       deactivateBugsCarrots();
       playSound(bugSound);
       stopSound(bgSound);
+      pauseBtn.style.pointerEvents = 'none';
     });
   });
 }
@@ -91,24 +93,19 @@ function createCarrot(className, count, imgPath) {
   }
 }
 
-function removeCarrot() {
+function removeBugAndCarrots() {
   carrot = [];
-  bugSection.innerHTML = "";
-}
-
-function removeBug() {
   bug = [];
   bugSection.innerHTML = "";
 }
 
 function deactivateBugsCarrots() {
-  item.style.pointerEvents = "none";
-}
-
-function activateBugsCarrots() {
-  // let bugImg = document.querySelector('.bugImg');
-  // console.log(bugImg);
-  item.style.pointerEvents = "auto";
+  bug.forEach((array) => {
+    array.style.pointerEvents = "none";
+  });
+  carrot.forEach((array) => {
+    array.style.pointerEvents = "none";
+  });
 }
 
 function randomPosition() {
@@ -194,6 +191,7 @@ function carrotCounter() {
 function checker() {
   if (CARROT_COUNT == 0) {
     wonBox.style.display = "block";
+    pauseBtn.style.pointerEvents = 'none';
     timeLeft = 0;
     deactivateBugsCarrots();
     playSound(winSound);
@@ -215,12 +213,10 @@ function gameRestart() {
   timeLeft = 5;
   clearInterval(timer);
   timerStart();
-  removeCarrot();
-  removeBug();
+  removeBugAndCarrots();
   randomPosition();
   carrotCounter();
   carrotFind();
-  activateBugsCarrots();
   playSound(bgSound);
   refreshCarrotCount();
 }
